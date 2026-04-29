@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block title %}Farm2Market{% endblock %}
+
+{% block content %}
+
+    <!-- Hero Section -->
+    <section class="relative bg-[#1A7753] overflow-hidden min-h-[calc(100vh-4rem)] flex items-center py-12 lg:py-16">
+        <!-- Floating Bokeh/Dots -->
+        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+            <!-- Large faint blobs -->
+            <div class="absolute top-1/4 -left-32 w-[30rem] h-[30rem] bg-emerald-400/10 rounded-full blur-[80px]"></div>
+            <div class="absolute bottom-1/4 -right-32 w-[30rem] h-[30rem] bg-teal-300/10 rounded-full blur-[80px]"></div>
+            
+            <!-- Scattered small light dots as seen in image -->
+            <div class="absolute top-1/4 left-1/4 w-3 h-3 bg-white/10 rounded-full blur-[1px]"></div>
+            <div class="absolute top-1/3 right-1/4 w-4 h-4 bg-white/5 rounded-full blur-[2px]"></div>
+            <div class="absolute bottom-1/3 left-1/5 w-6 h-6 bg-white/5 rounded-full blur-[2px]"></div>
+            <div class="absolute bottom-1/4 right-1/5 w-8 h-8 bg-white/5 rounded-full blur-[3px]"></div>
+            <div class="absolute top-1/2 left-10 w-4 h-4 bg-white/10 rounded-full blur-[1px]"></div>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center z-10">
+            <!-- Left Content -->
+            <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
+                <!-- Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 shadow-sm text-white text-sm font-bold mb-6">
+                    <span class="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse"></span>
+                    100% Organic & Locally Sourced
+                </div>
+                
+                <!-- Title -->
+                <h1 class="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] mb-6">
+                    Fresh <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-300 via-emerald-300 to-teal-300">Farm Food</span><br />
+                    Direct To You
+                </h1>
+                
+                <!-- Description -->
+                <p class="text-lg sm:text-xl lg:text-2xl text-green-50 max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed">
+                    Cut out the middleman. Empower local farmers and get the freshest, highest quality produce delivered straight from the farm to your table.
+                </p>
+                
+                <!-- Actions -->
+                <div class="flex flex-col sm:flex-row gap-4 mb-10 lg:mb-0 w-full sm:w-auto">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'product_list_view' %}" class="bg-[#24AE72] hover:bg-[#1f9762] text-white px-7 py-3.5 rounded-2xl font-bold text-lg shadow-[0_10px_25px_-5px_rgba(16,185,129,0.4)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
+                            View Products
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
+                        {% if user.profile.role == 'farmer' %}
+                            <a href="{% url 'farmer_dashboard_view' %}" class="bg-transparent text-white border-2 border-white/60 hover:border-white hover:bg-white/10 px-7 py-3.5 rounded-2xl font-bold text-lg hover:-translate-y-0.5 transition-all shadow-sm flex items-center justify-center w-full sm:w-auto">Farmer Dashboard</a>
+                        {% elif user.profile.role == 'buyer' %}
+                            <a href="{% url 'buyer_dashboard_view' %}" class="bg-transparent text-white border-2 border-white/60 hover:border-white hover:bg-white/10 px-7 py-3.5 rounded-2xl font-bold text-lg hover:-translate-y-0.5 transition-all shadow-sm flex items-center justify-center w-full sm:w-auto">User Dashboard</a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'product_list_view' %}" class="bg-[#24AE72] hover:bg-[#1f9762] text-white px-7 py-3.5 rounded-2xl font-bold text-lg shadow-[0_10px_25px_-5px_rgba(16,185,129,0.4)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
+                            Explore Products
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
+                        <a href="{% url 'register_view' %}" class="bg-transparent text-white border-2 border-white/60 hover:border-white hover:bg-white/10 px-7 py-3.5 rounded-2xl font-bold text-lg hover:-translate-y-0.5 transition-all shadow-sm flex items-center justify-center w-full sm:w-auto">Join Community</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Right Image Showcase -->
+            <div class="relative hidden lg:block w-full max-w-xl xl:max-w-2xl z-10 justify-self-end">
+                <!-- Floating Element 1 (Top Left) -->
+                <div class="absolute -left-12 top-10 bg-white/10 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/20 cursor-default z-20 hover:scale-105 transition-transform text-white">
+                    <div class="flex items-center gap-4">
+                                                <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center shadow-inner border border-white/30">
+                            <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 9.8a7 7 0 0 1-9 8.2Zm0 0v-5m-4.5-1.5L11 15m4.5-1.5L11 15"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-base font-bold text-white">Fresh Harvest</p>
+                            <p class="text-sm text-green-300 font-semibold flex items-center gap-2">
+                                <span class="relative flex h-2 w-2">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-300 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-400"></span>
+                                </span>
+                                Just added
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Main Image -->
+                <div class="relative group perspective-1000">
+                    <!-- Glow effect behind image -->
+                    <div class="absolute -inset-4 bg-gradient-to-r from-emerald-400 via-teal-500 to-green-500 rounded-[2rem] blur-2xl opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    
+                    <!-- Decorative border frame -->
+                    <div class="absolute inset-0 border-2 border-dashed border-white/40 rounded-[2rem] transform -rotate-3 scale-105 opacity-0 group-hover:opacity-100 transition-all duration-500 z-0"></div>
+                    
+                    <!-- The actual image -->
+                    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1974&auto=format&fit=crop" alt="Fresh Organic Vegetables" class="relative rounded-[2rem] shadow-2xl object-cover h-[480px] lg:h-[600px] w-full transform group-hover:-translate-y-3 group-hover:rotate-2 transition-all duration-500 border-8 border-white/20 z-10">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 bg-gray-50 border-y border-gray-200/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="inline-block bg-[#1A7753]/10 text-[#1A7753] text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3">Why Farm2Market?</span>
+                <h2 class="text-2xl md:text-4xl font-black text-gray-900 mb-4">Platform Features</h2>
+                <p class="text-lg text-gray-600 leading-relaxed">A convenient platform designed to empower farmers and satisfy buyers with the best quality.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feature Card 1 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 border border-gray-100 hover:border-emerald-200 hover:bg-gradient-to-b hover:from-white hover:to-emerald-50/50 hover:-translate-y-1.5 group">
+                                        <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-6 h-6 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5 8-6.4 8-8.5V10c0-1-1-2-2-2h-3c-1.5 0-3 1.5-3 3v2c0 2-1 4-3 5.5"/><path d="M12 11c1-1.5 2.5-3 4.5-3.5"/><path d="M10 11c-1-1.5-2.5-3-4.5-3.5"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-emerald-700 transition-colors">Fresh Produce</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Get fresh produce directly from the farmer's field to your home, without any middlemen.</p>
+                </div>
+                <!-- Feature Card 2 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 border border-gray-100 hover:border-amber-200 hover:bg-gradient-to-b hover:from-white hover:to-amber-50/50 hover:-translate-y-1.5 group">
+                                        <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-6 h-6 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-amber-700 transition-colors">Fair Prices</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Farmers get better prices by selling directly, and buyers purchase at much lower costs.</p>
+                </div>
+                <!-- Feature Card 3 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 border border-gray-100 hover:border-purple-200 hover:bg-gradient-to-b hover:from-white hover:to-purple-50/50 hover:-translate-y-1.5 group">
+                                        <div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-6 h-6 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-5h-4v5a1 1 0 0 0 1 1Z"/><path d="M16 8h4.7l1.5 3H16Z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-purple-700 transition-colors">Home Delivery</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Products will be delivered straight to your exact address, saving you the grocery trip.</p>
+                </div>
+                <!-- Feature Card 4 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 border border-gray-100 hover:border-pink-200 hover:bg-gradient-to-b hover:from-white hover:to-pink-50/50 hover:-translate-y-1.5 group">
+                                        <div class="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-6 h-6 text-pink-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-pink-700 transition-colors">Secure Transactions</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Shop with full confidence safely and securely on our advanced protected platform.</p>
+                </div>
+                <!-- Feature Card 5 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 border border-gray-100 hover:border-cyan-200 hover:bg-gradient-to-b hover:from-white hover:to-cyan-50/50 hover:-translate-y-1.5 group">
+                                        <div class="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-6 h-6 text-cyan-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-cyan-700 transition-colors">Farmer Dashboard</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Farmers can easily add, edit, and keep track of their farm products efficiently.</p>
+                </div>
+                <!-- Feature Card 6 -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.1)] transition-all duration-300 border border-gray-100 hover:border-rose-200 hover:bg-gradient-to-b hover:from-white hover:to-rose-50/50 hover:-translate-y-1.5 group">
+                                        <div class="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center mb-4 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-6 h-6 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-rose-700 transition-colors">Easy to Use</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">A perfectly synced mobile-friendly interface designed for usage from any device.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-16 bg-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16 relative z-10">
+                <span class="inline-block bg-[#1A7753]/10 text-[#1A7753] text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3">Process</span>
+                <h2 class="text-2xl md:text-3xl font-black text-gray-900">How it Works?</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-10">
+                <div class="hidden md:block absolute top-[2rem] left-[12%] w-[76%] h-[2px] bg-[#1A7753]/10 z-0"></div>
+                
+                <!-- Step 1 -->
+                <div class="relative text-center w-full">
+                    <div class="w-16 h-16 mx-auto bg-[#1A7753] text-white rounded-full flex items-center justify-center text-xl font-black shadow-lg shadow-[#1A7753]/30 mb-6 relative z-10 border-4 border-white transform transition hover:scale-110">1</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Register</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed px-2">Create a free account as a seller or a buyer instantly.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="relative text-center w-full">
+                    <div class="w-16 h-16 mx-auto bg-[#1A7753] text-white rounded-full flex items-center justify-center text-xl font-black shadow-lg shadow-[#1A7753]/30 mb-6 relative z-10 border-4 border-white transform transition hover:scale-110">2</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Browse</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed px-2">View and choose from fresh vegetables, fruits, and goods.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="relative text-center w-full">
+                    <div class="w-16 h-16 mx-auto bg-[#1A7753] text-white rounded-full flex items-center justify-center text-xl font-black shadow-lg shadow-[#1A7753]/30 mb-6 relative z-10 border-4 border-white transform transition hover:scale-110">3</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Place Order</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed px-2">Add your favorite products to the cart and input your location.</p>
+                </div>
+                <!-- Step 4 -->
+                <div class="relative text-center w-full">
+                    <div class="w-16 h-16 mx-auto bg-[#1A7753] text-white rounded-full flex items-center justify-center text-xl font-black shadow-lg shadow-[#1A7753]/30 mb-6 relative z-10 border-4 border-white transform transition hover:scale-110">4</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Receive</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed px-2">Fresh farm products will flawlessly arrive at your doorstep!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="py-16 bg-white relative border-b border-gray-200/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-2xl md:text-4xl font-black text-gray-900 mb-3">Shop by Category</h2>
+                <p class="text-base text-gray-600 max-w-2xl mx-auto">Explore our wide selection of fresh, locally grown produce and organic farm goods.</p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                {% for category in categories %}
+                <a href="{% url 'product_list_view' %}?category={{ category.category_id }}" class="block bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100 hover:shadow-md hover:border-[#1A7753]/30 hover:bg-gradient-to-b hover:from-white hover:to-[#1A7753]/5 hover:-translate-y-1 transition-all duration-300 group cursor-pointer">
+                    <div class="w-14 h-14 mx-auto bg-[#1A7753]/5 border border-[#1A7753]/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#1A7753]/10 transition-colors duration-300 transform group-hover:rotate-6">
+                        <span class="text-2xl font-black text-[#1A7753]">{{ category.name|first|upper }}</span>
+                    </div>
+                    <h3 class="text-base md:text-lg font-bold text-gray-900 group-hover:text-[#1A7753] transition-colors">{{ category.name }}</h3>
+                    {% if category.description %}
+                    <p class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">{{ category.description }}</p>
+                    {% endif %}
+                </a>
+                {% empty %}
+                <div class="col-span-full text-center py-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                    <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                    <h3 class="text-base font-bold text-gray-900">No categories found</h3>
+                    <p class="mt-1 text-sm text-gray-500">Check back later for fresh new categories.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-[#1A7753] rounded-[2.5rem] p-10 md:p-16 text-center shadow-2xl relative overflow-hidden flex flex-col items-center justify-center group transform transition-all">
+                <!-- Background visual elements -->
+                <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full border-4 border-white/10 opacity-50"></div>
+                <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-56 h-56 rounded-full bg-white/10 filter blur-xl"></div>
+                
+                <div class="relative z-10 max-w-2xl mx-auto">
+                    <h2 class="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">Get Started Today!</h2>
+                    <p class="text-green-50 text-lg md:text-xl font-medium mb-10 leading-relaxed opacity-90">
+                        Sell your produce as a farmer, or get access to the freshest high-quality farm goods as a buyer today.
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4 z-20">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'product_list_view' %}" class="bg-white text-[#1A7753] border-2 border-white px-6 py-3 rounded-xl font-bold text-base hover:-translate-y-1 hover:bg-gray-50 transition-all shadow-md flex items-center justify-center">Explore Products</a>
+                        {% else %}
+                            <a href="{% url 'register_view' %}" class="bg-white text-[#1A7753] border-2 border-white px-6 py-3 rounded-xl font-bold text-base hover:-translate-y-1 hover:bg-gray-50 transition-all shadow-md flex items-center justify-center">Join Community</a>
+                            <a href="{% url 'product_list_view' %}" class="bg-transparent text-white border-2 border-white/40 hover:border-white hover:bg-white/10 px-6 py-3 rounded-xl font-bold text-base hover:-translate-y-1 transition-all shadow-md flex items-center justify-center">Explore Products</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block footer %}
+{% include 'F2M/footer.html' %}
+{% endblock %}

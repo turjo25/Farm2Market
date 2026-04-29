@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Edit Product{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <div class="flex items-center justify-between">
+        <h2 class="text-2xl sm:text-3xl font-bold text-[#1A7753]">Edit Product: {{ product.name }}</h2>
+        <a href="{% url 'farmer_dashboard_view' %}" class="text-[#1A7753] hover:text-[#156043] transition font-medium">&larr; Back to Dashboard</a>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-[#1A7753]/10">
+        <form method="POST" action="{% url 'edit_product_view' product.product_id %}" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Product Name</label>
+                    <input type="text" name="name" value="{{ product.name }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#1A7753] focus:ring-[#1A7753] bg-gray-50 p-2 border">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Category</label>
+                    <select name="category" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#1A7753] focus:ring-[#1A7753] bg-gray-50 p-2 border">
+                        <option value="">Select Category</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.category_id }}" {% if cat.category_id == product.category.category_id %}selected{% endif %}>{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Price (per unit)</label>
+                    <input type="number" step="1" min="0" name="price_per_unit" value="{{ product.price_per_unit }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#1A7753] focus:ring-[#1A7753] bg-gray-50 p-2 border">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Stock Quantity</label>
+                    <input type="number" step="1" min="0" name="stock_quantity" value="{{ product.stock_quantity }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#1A7753] focus:ring-[#1A7753] bg-gray-50 p-2 border">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Unit (e.g., kg, liter, piece)</label>
+                    <input type="text" name="unit" value="{{ product.unit }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#1A7753] focus:ring-[#1A7753] bg-gray-50 p-2 border">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Update Product Image</label>
+                    <input type="file" name="image" accept="image/*" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#1A7753] focus:ring-[#1A7753] bg-gray-50 p-1.5 border">
+                    {% if product.image %}
+                        <p class="text-xs text-gray-500 mt-1">Current: <a href="{{ product.image.url }}" target="_blank" class="text-[#1A7753] hover:underline">View Image</a></p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Description</label>
+                <textarea name="description" rows="5" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#1A7753] focus:ring-[#1A7753] bg-gray-50 p-2 border">{{ product.description }}</textarea>
+            </div>
+            
+            <div class="flex justify-end pt-4">
+                <button type="submit" class="bg-[#1A7753] text-white px-6 py-2 rounded-lg hover:bg-[#156043] transition font-medium">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

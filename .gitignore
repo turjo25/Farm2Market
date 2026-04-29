@@ -1,0 +1,16 @@
+# Environments
+.env
+my_env
+*.sqlite3
+Farm2Market/db.sqlite3
+
+# Python cache
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Media files
+Farm2Market/media/
+Farm2Market/media/*

@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} - Farm2Market{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gray-50/50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Breadcrumb -->
+        <div class="flex items-center gap-2 text-sm font-semibold text-green-700 mb-8">
+            <a href="{% url 'product_list_view' %}" class="flex items-center gap-2 hover:text-green-800 transition-colors bg-white px-4 py-2 rounded-xl shadow-sm border border-green-100">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back to Marketplace
+            </a>
+            <svg class="w-4 h-4 text-green-300 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            <span class="text-green-900">{{ product.name }}</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- LEFT COLUMN -->
+            <div class="lg:col-span-8 space-y-6">
+                <!-- Image Container -->
+                <div class="relative w-full h-[400px] lg:h-[500px] bg-gradient-to-br from-green-50 to-emerald-100/50 rounded-[2rem] overflow-hidden shadow-sm border border-green-100">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                        <div class="w-full h-full flex flex-col items-center justify-center text-green-600/40">
+                            <svg class="w-24 h-24 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span class="text-lg font-medium">No Image Available</span>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Top Left Badges -->
+                    <div class="absolute top-6 left-6 flex flex-col items-start gap-2">
+                        <span class="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider text-green-800 shadow-sm border border-green-50">
+                            {{ product.category.name }}
+                        </span>
+                        <span class="{% if product.stock_quantity > 0 %}bg-emerald-500{% else %}bg-red-500{% endif %} px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider text-white shadow-sm flex items-center gap-1.5 border border-white/20">
+                            <span class="w-1.5 h-1.5 bg-white rounded-full {% if product.stock_quantity > 0 %}animate-pulse{% endif %}"></span>
+                            {% if product.stock_quantity > 0 %}AVAILABLE NOW{% else %}OUT OF STOCK{% endif %}
+                        </span>
+                    </div>
+
+                    <!-- Bottom Right Price Tag -->
+                    <div class="absolute bottom-6 right-6 bg-white/95 backdrop-blur-sm px-6 py-3 rounded-2xl shadow-lg border border-green-50">
+                        <span class="text-3xl font-black text-green-700">৳{{ product.price_per_unit }}</span>
+                    </div>
+                </div>
+
+                <!-- About Box -->
+                <div class="bg-white rounded-[2rem] p-8 sm:p-10 shadow-sm border border-green-100">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-1.5 h-6 bg-green-500 rounded-full"></div>
+                        <h2 class="text-xl font-extrabold text-gray-900">About this product</h2>
+                    </div>
+                    
+                    <p class="text-gray-600 leading-relaxed text-lg mb-8 whitespace-pre-line">{{ product.description }}</p>
+                    
+                    <div class="flex flex-wrap items-center gap-3">
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-100 rounded-xl text-sm font-bold text-green-800">
+                            <span class="text-green-600">🍽️</span> {{ product.category.name }}
+                        </span>
+                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-xl text-sm font-bold text-emerald-800">
+                            <span class="text-emerald-600">👨‍🌾</span> By {{ product.farmer.farm_name|default:product.farmer.user.username }}
+                        </span>
+                    </div>
+                </div>
+
+                {% if can_rate %}
+                <!-- Rate Product Box -->
+                <div id="rating" class="bg-white rounded-[2rem] p-8 shadow-sm border border-green-100">
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Rate this product</h3>
+                    <p class="text-sm text-gray-500 mb-6">You purchased this product. Let others know what you think!</p>
+                    
+                    <form method="POST" action="{% url 'rate_product_view' product.product_id %}" class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                        {% csrf_token %}
+                        <div class="flex flex-row-reverse justify-end items-center gap-1 rating-stars">
+                            <input type="radio" id="star5" name="rating" value="5" class="peer hidden" {% if user_rating == 5 %}checked{% endif %} required />
+                            <label for="star5" class="text-3xl text-gray-300 peer-checked:text-yellow-400 hover:text-yellow-400 cursor-pointer transition-colors">★</label>
+                            
+                            <input type="radio" id="star4" name="rating" value="4" class="peer hidden" {% if user_rating == 4 %}checked{% endif %} />
+                            <label for="star4" class="text-3xl text-gray-300 peer-checked:text-yellow-400 hover:text-yellow-400 cursor-pointer transition-colors">★</label>
+                            
+                            <input type="radio" id="star3" name="rating" value="3" class="peer hidden" {% if user_rating == 3 %}checked{% endif %} />
+                            <label for="star3" class="text-3xl text-gray-300 peer-checked:text-yellow-400 hover:text-yellow-400 cursor-pointer transition-colors">★</label>
+                            
+                            <input type="radio" id="star2" name="rating" value="2" class="peer hidden" {% if user_rating == 2 %}checked{% endif %} />
+                            <label for="star2" class="text-3xl text-gray-300 peer-checked:text-yellow-400 hover:text-yellow-400 cursor-pointer transition-colors">★</label>
+                            
+                            <input type="radio" id="star1" name="rating" value="1" class="peer hidden" {% if user_rating == 1 %}checked{% endif %} />
+                            <label for="star1" class="text-3xl text-gray-300 peer-checked:text-yellow-400 hover:text-yellow-400 cursor-pointer transition-colors">★</label>
+                        </div>
+                        <button type="submit" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-colors">
+                            Submit Rating
+                        </button>
+                    </form>
+                    <style>
+                        .rating-stars > label:hover,
+                        .rating-stars > label:hover ~ label {
+                            color: #facc15 !important;
+                        }
+                    </style>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Title & Price Box -->
+                <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-green-100">
+                    <h1 class="text-3xl font-extrabold text-gray-900 mb-2">{{ product.name }}</h1>
+                    
+                    <!-- Star Rating Display -->
+                    <div class="flex items-center gap-2 mb-8">
+                        <div class="flex items-center text-lg">
+                            {% for i in "12345"|make_list %}
+                                <span class="{% if product.avg_rating and product.avg_rating >= forloop.counter %}text-yellow-400{% elif product.avg_rating and product.avg_rating >= forloop.counter0|add:0.5 %}text-yellow-400 opacity-50{% else %}text-gray-300{% endif %}">★</span>
+                            {% endfor %}
+                        </div>
+                        <span class="text-sm font-medium text-gray-500">
+                            {% if product.review_count %}
+                                {{ product.avg_rating|floatformat:1 }} ({{ product.review_count }} review{{ product.review_count|pluralize }})
+                            {% else %}
+                                No ratings yet
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-[10px] font-bold text-green-600 uppercase tracking-widest mb-1">Price</p>
+                            <p class="text-3xl font-black text-green-700">৳{{ product.price_per_unit }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1 text-right">Stock ({{ product.unit }})</p>
+                            <p class="text-3xl font-black text-emerald-700 text-right">{{ product.stock_quantity }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Made By Box (Dark Theme but Greenish) -->
+                <div class="bg-gradient-to-br from-green-900 to-emerald-950 rounded-[2rem] p-8 shadow-sm relative overflow-hidden">
+                    <!-- Subtle glow effect -->
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-400/20 rounded-full blur-3xl"></div>
+                    <div class="absolute bottom-0 left-0 w-32 h-32 bg-emerald-400/20 rounded-full blur-3xl"></div>
+                    
+                    <p class="text-[10px] font-bold text-green-300 uppercase tracking-widest mb-6 relative z-10">Produced By</p>
+                    
+                    <div class="flex items-center gap-4 relative z-10">
+                        <div class="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg border border-green-400">
+                            {{ product.farmer.farm_name|default:product.farmer.user.username|first|upper }}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl text-white">{{ product.farmer.farm_name|default:product.farmer.user.username }}</h3>
+                            <p class="text-green-200 text-sm font-medium">Verified Farmer</p>
+                        </div>
+                    </div>
+                    
+                    <hr class="border-green-700/50 my-6 relative z-10">
+                    
+                    <div class="grid grid-cols-2 gap-4 relative z-10">
+                        <div class="text-center">
+                            <p class="text-2xl font-black text-yellow-400">★</p>
+                            <p class="text-xs font-bold text-green-100 mt-1">Top Rated</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-lg font-black text-green-300 truncate px-2" title="{{ product.farmer.farm_location|default:'Local Farm' }}">
+                                {{ product.farmer.farm_location|default:'Active' }}
+                            </p>
+                            <p class="text-xs font-bold text-green-100 mt-1">Farm Location</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Box -->
+                <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-green-100">
+                    {% if not user.is_authenticated %}
+                        <div class="bg-emerald-50/50 border border-emerald-100 rounded-2xl p-6 text-center mb-4">
+                            <p class="text-sm font-bold text-emerald-800 leading-relaxed">
+                                Want to order this fresh produce? <a href="{% url 'login_view' %}" class="underline hover:text-emerald-600">Login</a> or <a href="{% url 'register_view' %}" class="underline hover:text-emerald-600">Register</a> to start your order!
+                            </p>
+                        </div>
+                    {% elif user.profile.role == 'buyer' %}
+                        <form method="POST" action="{% url 'add_to_cart_view' product.product_id %}" class="mb-4">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold text-lg py-4 px-6 rounded-2xl transition-all duration-300 shadow-[0_4px_15px_rgb(26,119,83,0.15)] hover:shadow-[0_4px_20px_rgb(26,119,83,0.3)] hover:-translate-y-0.5 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" {% if product.stock_quantity <= 0 %}disabled{% endif %}>
+                                {% if product.stock_quantity > 0 %}
+                                    <span class="flex items-center justify-center gap-2">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                        Add to Cart
+                                    </span>
+                                {% else %}
+                                    Out of Stock
+                                {% endif %}
+                            </button>
+                        </form>
+                    {% elif user.profile.role == 'farmer' and user.profile == product.farmer %}
+                        <a href="{% url 'edit_product_view' product.product_id %}" class="w-full flex items-center justify-center gap-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold text-lg py-4 px-6 rounded-2xl transition-all duration-300 mb-4 border border-emerald-200">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            Edit Product
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Quick Info Box -->
+                <div class="bg-emerald-50/50 rounded-[2rem] p-8 shadow-sm border border-emerald-100">
+                    <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-6">Quick Info</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-emerald-800">Category</span>
+                            <span class="text-sm font-black text-emerald-950">{{ product.category.name }}</span>
+                        </div>
+                        <hr class="border-emerald-200/60">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-emerald-800">Availability</span>
+                            <span class="text-sm font-black {% if product.stock_quantity > 0 %}text-green-600{% else %}text-red-500{% endif %}">
+                                {% if product.stock_quantity > 0 %}Available{% else %}Out of Stock{% endif %}
+                            </span>
+                        </div>
+                        <hr class="border-emerald-200/60">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-emerald-800">Farmer</span>
+                            <span class="text-sm font-black text-emerald-950 truncate max-w-[150px] text-right">{{ product.farmer.farm_name|default:product.farmer.user.username }}</span>
+                        </div>
+                        <hr class="border-emerald-200/60">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-bold text-emerald-800">Price</span>
+                            <span class="text-sm font-black text-green-700">৳{{ product.price_per_unit }}</span>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block footer %}
+{% include 'F2M/footer.html' %}
+{% endblock %}
