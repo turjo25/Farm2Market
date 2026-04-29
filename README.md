@@ -1,6 +1,6 @@
 #  Farm2Market - Farmer-to-Buyer Marketplace Platform
 
-A full-featured, modern multi-role e-commerce platform built with Django. Farm2Market directly connects **farmers** with **buyers**, enabling streamlined product listings, cart management, order tracking, and logistics coordination — eliminating the need for middlemen.
+A full-featured, modern multi-role e-commerce platform built with Django. Farm2Market directly connects **farmers** with **buyers**, enabling streamlined product listings, cart management, order tracking, product ratings, and logistics coordination — eliminating the need for middlemen.
 
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
 ![Django](https://img.shields.io/badge/Django-092E20?logo=django&logoColor=white)
@@ -22,10 +22,11 @@ A full-featured, modern multi-role e-commerce platform built with Django. Farm2M
 ###  Buyer
 - **Registration** - Register with a delivery address
 - **Product Discovery** - Browse and search products by name or category
+- **Product Rating System** - Rate products (1-5 stars) after completing an order, providing valuable feedback to farmers
 - **Smart Cart** - Add products to cart with support for **session-based cart** for unauthenticated users
 - **Cart Merge on Login** - Anonymous cart merges seamlessly into the user account on login
 - **Checkout** - Checkout groups items by farmer and creates separate per-farmer orders
-- **Order History** - View past orders and real-time status updates
+- **Order History** - View past orders and real-time status updates, with a direct call-to-action to rate purchased products
 - **Receipt Confirmation** - Confirm receipt to complete an order
 - **Delivery Notifications** - Notification badges for delivered orders
 
@@ -47,21 +48,6 @@ A full-featured, modern multi-role e-commerce platform built with Django. Farm2M
 ### Frontend
 - **Template Engine**: Django Templates (HTML/CSS/JS)
 - **Icons & Styling**: Custom CSS with native browser styles
-
-
-##  Screenshots
-
-### Farmer Dashboard
-<img src="./images/4.jpeg" alt="Farmer Dashboard" width="600" />
-
-### Buyer Dashboard
-<img src="./images/9.jpeg" alt="Buyer Dashboard" width="600" />
-
-### Product Listing
-<img src="./images/5.jpeg" alt="Product Listing" width="600" />
-
-### Cart Page
-<img src="./images/6.jpeg" alt="Shopping Cart" width="600" />
 
 
 ##  Prerequisites
@@ -179,6 +165,7 @@ Farm2Market/                        ← Root repo
     │   └── F2M/
     │       ├── home.html
     │       ├── products.html
+    │       ├── product_detail.html
     │       ├── cart.html
     │       ├── edit_product.html
     │       ├── farmer_dashboard.html
@@ -211,7 +198,7 @@ Farm2Market/                        ← Root repo
 - **Cart / CartItem** — One persistent cart per buyer. Anonymous users get a session-based cart that merges on login.
 - **Order / OrderItem** — Created per farmer on checkout with a price snapshot. Order status flow:
 
-  ```
+  ```text
   PENDING
     ├── CONFIRMED → ASSIGNED → OUT_FOR_DELIVERY → DELIVERED → COMPLETED
     ├── REJECTED  (by farmer)
@@ -220,6 +207,7 @@ Farm2Market/                        ← Root repo
 
 - **Logistic** — Delivery providers (e.g., Pathao, Steadfast) assigned by farmers at the `CONFIRMED` stage. Stores `name` and an optional `contact_number`.
 - **Notification** — Per-user, per-order messages with an `is_read` flag, surfaced as navbar badges via context processors.
+- **Review** — Stores 1 to 5 star product ratings submitted by buyers. Enforces a single unique review per buyer for each product.
 
 
 ##  Admin Features
@@ -231,6 +219,7 @@ Farm2Market/                        ← Root repo
 - **User Management** - Manage farmer and buyer accounts
 - **Logistic Management** - Add and configure delivery providers
 - **Stock Control** - Monitor and update product inventory
+- **Review Moderation** - Monitor product ratings and reviews
 
 
 ##  Security Features
@@ -245,10 +234,25 @@ Farm2Market/                        ← Root repo
 
 ##  Deployment
 
+The project is optimized for deployment on platforms like **Render**, **Railway**, or **Heroku** using `WhiteNoise` for static file serving and `dj-database-url` for database management.
+
+### Render UI Deployment Guide
+1. Create a new Web Service on the Render Dashboard and link this repository.
+2. Ensure you have provisioned a PostgreSQL database.
+3. Configure the **Build Command**:
+   ```bash
+   pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate
+   ```
+4. Configure the **Start Command**:
+   ```bash
+   gunicorn Farm2Market.wsgi:application
+   ```
+
 ### Environment Variables Reference
 
 | Variable       | Required | Description                                         |
 |----------------|----------|-----------------------------------------------------|
+| `PYTHON_VERSION`| No      | Target Python Version (e.g., `3.11.0`)              |
 | `SECRET_KEY`   | Yes      | Django secret key for cryptographic signing         |
 | `DEBUG`        | No       | `True` for development, `False` for production      |
 | `DATABASE_URL` | No       | PostgreSQL connection string; defaults to SQLite    |
@@ -257,39 +261,9 @@ Farm2Market/                        ← Root repo
 | `AWS_STORAGE_BUCKET_NAME`| Yes | Target S3 bucket (e.g. `media`)                |
 | `AWS_S3_ENDPOINT_URL` | Yes | Supabase S3 Endpoint URL                          |
 
-The project uses `dj-database-url` with a `DATABASE_URL` environment variable, making it straightforward to deploy on platforms like **Render**, **Railway**, or **Heroku** with a Supabase PostgreSQL database.
-
-
-##  Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-
 ##  License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-
-##  Authors
-
-- GitHub: [@nabil0203](https://github.com/nabil0203)
-- GitHub: [@turjo25](https://github.com/turjo25)
-- GitHub: [@mdsajib1473](https://github.com/mdsajib1473)
-
-
-##  Reports & Documentation
-
-Project documents are located in the `/Reports` directory:
-
--  `Project_Proposal.pdf` — Initial project proposal
--  `SRS.pdf` — Software Requirements Specification
--  `Project Progress Report.pdf` — Progress report
 
 
 ##  Acknowledgments
